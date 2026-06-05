@@ -1,0 +1,6 @@
+spring:
+  application:
+    name=demProduct-api-simple
+
+server:
+  port: 8081
