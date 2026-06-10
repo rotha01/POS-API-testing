@@ -24,10 +24,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation:4.1.0-RC1'
 
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    runtimeOnly 'org.postgresql:postgresql'
+//  auto create container
+// spring data jps, will configure datasource for u
+//  runtimeOnly 'org.springframework.boot:spring-boot-docker-compose'
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'

@@ -5,16 +5,19 @@ import co.istad.demproductapisimple.dto.categoryDto.CategoryResponse;
 import co.istad.demproductapisimple.dto.categoryDto.UpdateCategoryRequest;
 import co.istad.demproductapisimple.entity.Category;
 import co.istad.demproductapisimple.repository.CategoryRepository;
+import co.istad.demproductapisimple.repository.CategoryRepositoryOld;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
+//    private final CategoryRepositoryOld categoryRepositoryOld;
+//    private Integer id = 1004;
     private final CategoryRepository categoryRepository;
-    private Integer id = 1004;
 
     private CategoryResponse mapToCategoryResponse(Category category) {
         return new CategoryResponse(
@@ -39,24 +42,21 @@ public class CategoryServiceImpl implements CategoryService{
     public CategoryResponse addCategory(CategoryRequest category) {
         var categoryEntity = mapToCategory(category);
         categoryEntity.setIsActive(true);
-        categoryEntity.setId(id++);
-
-        return mapToCategoryResponse(categoryEntity);
+        return mapToCategoryResponse(categoryRepository.save(categoryEntity));
     }
 
     @Override
     public List<CategoryResponse> findAllCategory() {
-        return categoryRepository.getAllCategories().stream()
+        return categoryRepository.findAll().stream()
                 .map(this::mapToCategoryResponse)
                 .toList();
     }
 
     @Override
     public CategoryResponse updateCategory(Integer id, UpdateCategoryRequest request) {
-        var existingCategory = categoryRepository.getCategoryById(id);
-        if(existingCategory == null){
-            System.out.println("Not found with category id " + id);
-        }
+        var existingCategory = categoryRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Category with id " + id + " not found!")
+        );
 
         if(request.name() != null ){
             existingCategory.setName(request.name());
@@ -68,37 +68,27 @@ public class CategoryServiceImpl implements CategoryService{
             existingCategory.setIsActive(request.isActive());
         }
         //update category
-        categoryRepository.updateCategoryById(existingCategory);
+        categoryRepository.save(existingCategory);
 
         return mapToCategoryResponse(existingCategory);
     }
 
     @Override
     public boolean deleteCategory(Integer id) {
-        CategoryResponse categoryResponse = this.findCategoryById(id) ;
-        try{
-            if(categoryResponse == null){
-                System.out.println("Not found with category id " + id);
-                return false;
-            }else{
-                categoryRepository.deleteCategoryById(id);
-                System.out.println("Category has been deleted successfully");
-                return true;
-            }
-        }catch(Exception e){
-            System.out.println("Category has been deleted successfully");
-            return false;
+        var existingCategory = categoryRepository.findById(id);
+        if(existingCategory.isPresent()){
+            categoryRepository.delete(existingCategory.get());
+            return true;
         }
+        return false;
 
     }
 
     @Override
-    public CategoryResponse findCategoryById(Integer categoryId) {
-        Category category = categoryRepository.getCategoryById(categoryId);
-        if(category == null){
-            System.out.println("Not found with category id " + categoryId);
-        }
-
+    public CategoryResponse findCategoryById(Integer id) {
+        Category category = categoryRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Category with id " + id + " not found!")
+        );
         return mapToCategoryResponse(category);
     }
 }
