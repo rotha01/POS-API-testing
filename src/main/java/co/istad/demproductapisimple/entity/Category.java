@@ -18,10 +18,10 @@ public class Category {
     private Integer id;
     private String name;
     private String description;
-    private Boolean isActive;
+    private Boolean isDelete;
     private Integer userId;
 
-    //one
+    //one category has many products
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 }

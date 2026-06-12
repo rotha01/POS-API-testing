@@ -45,4 +45,15 @@ public class RestControllerAdvisor {
                 HttpStatus.BAD_REQUEST
         );
     }
+
+    @ExceptionHandler(ResourceAlreadyExistException.class)
+    public ResponseEntity<ErrorResponse<?>> handleResourceAlreadyExistException(ResourceAlreadyExistException ex) {
+        var response = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .status_code(HttpStatus.CONFLICT.value())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 }

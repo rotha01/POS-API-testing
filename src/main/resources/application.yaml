@@ -7,7 +7,7 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update     # create | update | none
+      ddl-auto: update     # create | update | noney
     show-sql: true          # log generated SQL
     properties:
       hibernate:

@@ -18,6 +18,7 @@ public class Product {
     private String description;
     private Float price;
     private Integer userId; //User who create product
+    private Boolean isDeleted;
 
     @ManyToOne(fetch =  FetchType.LAZY )
     @JoinColumn(name = "category_id")

@@ -1,5 +1,6 @@
 package co.istad.demproductapisimple.dto.categoryDto;
 
+import co.istad.demproductapisimple.entity.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -13,6 +14,7 @@ public record CategoryRequest(
         @Size(min = 1, max = 200)
         String description,
         @NotNull(message = "active is required")
-        Boolean isActive
+        Boolean isDelete
+
 ) {
 }

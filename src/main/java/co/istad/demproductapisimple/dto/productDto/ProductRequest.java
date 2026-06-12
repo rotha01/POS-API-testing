@@ -1,8 +1,10 @@
 package co.istad.demproductapisimple.dto.productDto;
 
+import co.istad.demproductapisimple.entity.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
 
 
 public record ProductRequest (
@@ -12,6 +14,13 @@ public record ProductRequest (
         String description,
         @NotNull(message = "price is required")
         @Positive(message = "price must be positive")
-        Float price
+        Float price,
+        @NotNull(message = "category is required")
+        Integer categoryId,
+
+
+        Boolean isDeleted
+
+
 ){
 }

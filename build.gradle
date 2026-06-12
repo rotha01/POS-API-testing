@@ -28,6 +28,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
+
+//    mapstruct
+    implementation "org.mapstruct:mapstruct:1.7.0.Beta1"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.7.0.Beta1"
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     runtimeOnly 'org.postgresql:postgresql'
 //  auto create container

@@ -4,6 +4,6 @@ public record CategoryResponse(
         int id,
         String name,
         String description,
-        Boolean isActive
+        Boolean isDelete
 ) {
 }
