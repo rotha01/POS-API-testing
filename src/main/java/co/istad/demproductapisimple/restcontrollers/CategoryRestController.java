@@ -62,5 +62,10 @@ public class CategoryRestController {
         return  ResponseEntity.ok(categoryService.searchCategory(keyword,pageable));
      }
 
+     @GetMapping("/name")
+    public List<CategoryResponse> findCategoryByName(@RequestParam String name){
+        return categoryService.findCategoryByName(name);
+     }
+
 
 }

@@ -110,7 +110,8 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public List<CategoryResponse> findCategoryByName(String categoryName) {
-        return List.of();
+        var existingCategory = categoryRepository.findByNameContainingIgnoreCase(categoryName);
+        return List.of(existingCategory);
     }
 
     @Override
