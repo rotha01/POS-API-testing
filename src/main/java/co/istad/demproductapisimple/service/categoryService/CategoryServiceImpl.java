@@ -9,11 +9,20 @@ import co.istad.demproductapisimple.entity.Category;
 import co.istad.demproductapisimple.mapper.CategoryMapper;
 import co.istad.demproductapisimple.repository.CategoryRepository;
 import co.istad.demproductapisimple.repository.CategoryRepositoryOld;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -49,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService{
         if(categoryRepository.existsByName(categoryEntity.getName())){
             throw new ResourceAlreadyExistException("Category with name " + categoryEntity.getName() + " already exists");
         }
-        categoryEntity.setIsDelete(true);
+        categoryEntity.setIsDeleted(true);
         return categoryMapper.toResponse(categoryRepository.save(categoryEntity));
     }
 
@@ -95,8 +104,8 @@ public class CategoryServiceImpl implements CategoryService{
         var existingCategory = categoryRepository.findById(id).orElseThrow(() ->new NoSuchElementException("" +
                 "Category with id " + id + " not found!"));
 
-        if(request.isDelete()) existingCategory.setIsDelete(true);
-        else existingCategory.setIsDelete(false);
+        if(request.isDelete()) existingCategory.setIsDeleted(true);
+        else existingCategory.setIsDeleted(false);
        return categoryMapper.toResponse(existingCategory);
     }
 
@@ -115,8 +124,30 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public Page<CategoryResponse> searchCategory(String keyword, Pageable pageable) {
+    public Page<CategoryResponse> searchCategory(String keyword,@PageableDefault(page = 0 ,size = 50) Pageable pageable) {
         var categories = categoryRepository.findByNameContainingIgnoreCase(keyword, pageable);
         return categories.map(categoryMapper::toResponse);
+    }
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<CategoryResponse> findCategoryDynamically(Integer userId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Category> cq = cb.createQuery(Category.class);
+        Root<Category> category = cq.from(Category.class);
+        cq.select(category);
+        List<Predicate> predicates = new ArrayList<>();
+        if (userId != null) {
+            // ប្រសិនបើមានបញ្ចូល department -> WHERE employee.department = :department
+            predicates.add(cb.equal(category.get("userId"), userId));
+        }
+        if (!predicates.isEmpty()) {
+            cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        }
+
+        TypedQuery<Category> query = entityManager.createQuery(cq);
+        return categoryMapper.toResponse(query.getResultList());
     }
 }

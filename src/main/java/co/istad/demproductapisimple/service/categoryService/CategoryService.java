@@ -20,6 +20,7 @@ public interface CategoryService {
     CategoryResponse findCategoryById(Integer categoryId);
     List<CategoryResponse> findCategoryByName(String categoryName);
     Page<CategoryResponse> searchCategory(String keyword, Pageable pageable);
+    List<CategoryResponse> findCategoryDynamically(Integer userId);
 
 
 }

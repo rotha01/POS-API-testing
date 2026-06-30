@@ -57,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse addProduct(ProductRequest request) {
-        var product = productMapper.toProduct(request);
+        var product = productMapper.mapToProduct(request);
 
 
 
@@ -73,20 +73,20 @@ public class ProductServiceImpl implements ProductService {
         }
         //set static userID
         product.setUserId(1);
-        return productMapper.toProductResponse(productRepository.save(product));
+        return productMapper.mapToResponse(productRepository.save(product));
     }
 
     @Override
     public List<ProductResponse> findAllProducts() {
         return productRepository.findAll().stream()
-                .map(productMapper::toProductResponse)
+                .map(productMapper::mapToResponse)
                 .toList();
     }
 
     @Override
     public Page<ProductResponse> findAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable)
-                .map(productMapper::toProductResponse);
+                .map(productMapper::mapToResponse);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class ProductServiceImpl implements ProductService {
 
         //update product
         productRepository.save(existingProduct);
-        return productMapper.toProductResponse(existingProduct);
+        return productMapper.mapToResponse(existingProduct);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setIsDeleted(true);
         }
         productRepository.save(existingProduct);
-        return productMapper.toProductResponse(existingProduct);
+        return productMapper.mapToResponse(existingProduct);
     }
 
 
@@ -148,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse findProductById(Integer id) {
         Product product = productRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Product with id " + id + " not found!"));
-        return productMapper.toProductResponse(product);
+        return productMapper.mapToResponse(product);
     }
 
     @Override
@@ -158,6 +158,6 @@ public class ProductServiceImpl implements ProductService {
                         keyword,
                         pageable
                 );
-        return products.map(productMapper::toProductResponse);
+        return products.map(productMapper::mapToResponse);
     }
 }

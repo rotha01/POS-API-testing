@@ -67,5 +67,10 @@ public class CategoryRestController {
         return categoryService.findCategoryByName(name);
      }
 
+     @GetMapping("/userId")
+    public List<CategoryResponse> findCategoryByIsDeleted(@RequestParam Integer userId){
+        return categoryService.findCategoryDynamically(userId);
+     }
+
 
 }

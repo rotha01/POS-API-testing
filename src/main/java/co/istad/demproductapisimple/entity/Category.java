@@ -2,26 +2,45 @@ package co.istad.demproductapisimple.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+
 @Entity(name = "category_tbl")
+@Table(name = "category_tbl")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String description;
-    private Boolean isDelete;
-    private Integer userId;
+    // this is used for enabling soft deletion
+    private Boolean isDeleted = false;
 
-    //one category has many products
+    private String icon; // store the icon url
+
+
+
+    // ex. Comment-Replies
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_category_id")
+    private Category parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory")
+    private List<Category> subCategories = new ArrayList<>();
+
+
+
+
+    // one category can have many products
     @OneToMany(mappedBy = "category")
+    // cascade
     private List<Product> products;
+    // 1 + N Queries
 }

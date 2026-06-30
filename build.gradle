@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
 
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-scalar:3.0.3'
     // Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
     implementation 'org.springframework.boot:spring-boot-starter-validation:4.1.0-RC1'
 
